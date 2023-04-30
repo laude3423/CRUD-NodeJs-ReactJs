@@ -1,0 +1,259 @@
+
+:root{
+  --background:#ffffff;
+  --text-primary:#000;
+  --text-secondary:#8e05c2;
+  --accent:#8e05c2;
+  --border:#333;
+  --form-bg:#fff;
+  --body-color:#E4E9F7;
+  --opacity:1;
+
+  --sidebar-background:#DDD;
+  --sidebar-color:#000;
+  --link-color:#000;
+  --linkhover-background:lightskyblue;
+  --linkhover-color:#000;
+  --active-background:lightskyblue;
+  --active-color:#000;
+  --mode-color:#DDD;
+  --primary-color:#695CFE;
+  --primary-color-light:#F6F5FF;
+  --toggle-color:#fff;
+  --text-color:#707070;
+  --left: 5px;
+
+  --tran-02: all 0.2s ease;
+  --tran-03: all 0.3s ease;
+  --tran-04: all 0.4s ease;
+  --tran-05: all 0.5s ease;
+}
+[data-theme='dark']{
+  --background:rgb(37, 36, 37);
+  --text-primary:#fff;
+  --text-secondary:#8e05c2;
+  --accent:#8e05c2;
+  --border:#808080;
+  --form-bg:#191919;
+  --left:20px;
+
+  --sidebar-background:#000;
+  --sidebar-color:#fff;
+  --link-color:#fff;
+  --linkhover-background:lightskyblue;
+  --linkhover-color:#000;
+  --active-background:lightskyblue;
+  --active-color:#000;
+  --mode-color:#000;
+  --sidebar-color:#FFF;
+  --primary-color:#695CFE;
+  --primary-color-light:#F6F5FF;
+  --toggle-color:#DDD;
+  --text-color:#707070;
+ 
+  
+}
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  height: 100vh;
+  transition: var(--tran-04);
+  background: var(--background);
+}
+.was-validated{
+  color: #000;
+}
+a{
+  color:var(--text-secondary);
+}
+.appa{
+  background: var(--background);
+  color: var(--text-primary);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: .8rem;
+  transition: all .5s;
+}
+.login h1{
+  align-items: center;
+  align-content: center;
+  text-align: left;
+  margin: -6rem 0 2rem;
+  font-size:  48px;
+}
+label{
+  color: var(--link-color);
+}
+h2{
+  text-align: center;
+  padding: 1rem;
+}
+.theme-toggle i{
+  font-size: 2rem;
+  cursor:pointer;
+  text-align: center;
+}
+.theme-toggle{
+  text-align: center;
+}
+.table-ligh{
+  background: var(--sidebar-background);
+}
+.containe{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  align-items: center;
+  font-size: 13px;
+  padding: 1.5rem;
+  width: 350px;
+  font-weight:700;
+  margin:auto;
+  box-shadow: 0px 0px 12px var(--border);
+  border-radius: 8px;
+  background: var(--form-bg);
+
+}
+.top{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.top i{
+  font-size: 1 rem;
+}
+
+.create{
+  font-size: 1rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+@media screen and (max-width:478){
+  .login{
+    width: 95%;
+  }
+}
+
+.containere{
+  display: flex;
+}
+ 
+  .sidebar{
+  background: var(--sidebar-background);
+  color: var(--sidebar-color);
+  height: 100vh;
+  transition: all 0.5s;
+} 
+.top_section{
+  display: flex;
+  align-items: center;
+  padding: 20px 15px;
+}
+.logo{
+  font-size: 20px;
+}
+.bars{
+  display: flex;
+  font-size: 20px;
+  margin-left: -50px;
+}
+.link{
+  text-decoration: none;
+  display: flex;
+  color: var(--link-color);
+  padding: 15px 15px;
+  gap: 20px;
+  transition: all 0.5s;
+}
+.link:hover{
+  background: var(--linkhover-background);
+  color: var(--linkhover-color);
+  transition: all 0.5s;
+  text-decoration: none;
+}
+.active{
+  background: var(--active-background);
+  color: var(--active-color);
+}
+icon, .link_text{
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+} 
+.switch::before{
+  content: '';
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  top: 56%;
+  cursor: pointer;
+  left: var(--left);
+  transform: translateY(-50%);
+  background: var(--sidebar-color);
+  transition:  var(--tran-03);
+}
+.sidebar .mode{
+  position: relative;
+  color:var(--link-color) ;
+  border-radius: 6px;
+  background: var(--mode-color);
+}
+.sidebar .mode i {
+  position: absolute;
+  transition: var(--tran-03);
+}
+.sidebar .mode .moon-sun{
+  height: 50px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+}
+.sidebar .mode i .sun{
+  opacity: 0;
+}
+.sidebar .mode .toggle-switch{
+  position: absolute;
+  right: 0;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  min-width: 60px;
+  cursor: pointer;
+}
+.toggle-switch .switch{
+  position: relative;
+  height: 22px;
+  width: 44px;
+  border-radius: 25px;
+  background: var(--toggle-color);
+}
+.sidebar .text{
+  font-size: 13px;
+  left: 17px;
+  font-weight: 500;
+  color: var(--link-color);
+  transition: var(--tran-04);
+  white-space: nowrap;
+  opacity: 1;
+}
+.text{
+  position: relative;
+  margin-left: 15px;
+}
+.moon{
+  left: 14px;
+}
+
