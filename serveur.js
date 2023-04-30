@@ -15,7 +15,7 @@ const db = mysql.createConnection({
 //livre
 app.get("/livre", (req, res) => {
     const sql = "SELECT * FROM livre";
-    bd.query(sql, (err, result) => {
+    db.query(sql, (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
@@ -158,6 +158,55 @@ app.put('updateEmemplaire/:idExemplaire', (req, res) => {
 app.delete('/deleteExemplaire/:idExemplaire', (req, res) => {
     const sql = "DELETE FROM exemplaire WHERE idExemplaire = ?";
     const id = req.params.idExemplaire
+
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.get('/users', (req, res) => {
+    const sql = "SELECT * FROM users";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+
+app.post('/users', (req, res) => {
+    const sql = "INSERT INTO users(`Nom`, `Email`, `Password`) VALUES(?)";
+    const values = [
+        req.body.nom,
+        req.body.email,
+        req.body.password
+    ]
+    db.query(sql, [values], (err, result) => {
+        if (err) return res.json(err);
+        return res.json(result);
+    })
+})
+
+app.get('users/detail/:id', (req, res) => {
+    const sql = "SELECT * FROM users WHERE ID = ?";
+    const id = req.params.id
+
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+
+app.put('users/update/:id', (req, res) => {
+    const sql = "UPDATE users SET `Nom`=?, `Email`=?, `Password`=? WHERE ID=?";
+    const id = req.params.id
+
+    db.query(sql, [req.body.nom, req.body.email, req.body.password, id], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.delete('users/delete/:id', (req, res) => {
+    const sql = "DELETE FROM users WHERE ID = ?";
+    const id = req.params.id
 
     db.query(sql, [id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
