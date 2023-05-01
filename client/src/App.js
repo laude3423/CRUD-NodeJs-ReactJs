@@ -1,5 +1,6 @@
 
 import './index.css';
+import './App.css';
 import Home from './pages/users/Home';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Ajout from './pages/users/Ajout';
@@ -25,7 +26,7 @@ function App() {
     <BrowserRouter>
       <Sidebar>
         <Routes>
-          <Route path="/users" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="users/acceuil" element={<Acceuil />} />
           <Route path="users/create" element={<Ajout />} />
           <Route path="users/detail/:id" element={<Detail />} />

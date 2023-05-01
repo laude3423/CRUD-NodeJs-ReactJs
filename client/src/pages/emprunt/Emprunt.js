@@ -1,6 +1,9 @@
+import { Box, Button, Container, FormControl, Input, Text } from '@chakra-ui/react'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { AiFillDelete, AiFillEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
+import { Link } from 'react-router-dom';
+import dateFormat from 'dateformat'
 
 const Emprunt = () => {
     const [data, setData] = useState([])
@@ -21,42 +24,73 @@ const Emprunt = () => {
         }
     }
     return (
-        <div className='app'>
-            <div className='container'>
-                <h2>Liste des emprunts</h2>
-                <div className='justify-content-end'>
-                    <Link to={"create"} className="btn btn-success">Nouveau(+)</Link>
-                </div>
-                <table className='table'>
-                    <thead>
-                        <tr>
-                            <th>Titre</th>
-                            <th>Auteur</th>
-                            <th>Editeur</th>
-                            <th>Date d'apparution</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            data.map((emprunt, index) => {
-                                return <tr key={index}>
-                                    <td>{emprunt.idEmprunteur}</td>
-                                    <td>{emprunt.idExemplaire}</td>
-                                    <td>{emprunt.dateEmprunt}</td>
-                                    <td>{emprunt.dateRetour}</td>
-                                    <td>
-                                        <Link to={`emprunt/detail/${emprunt.idEmprunt}`} className="btn text-warning btn-act" data-toggle="modal">Détail</Link>
-                                        <Link to={`emprunt/edit/${emprunt.idEmprunt}`} className='btn btn-sm btn-warning'>Editer</Link>
-                                        <button onClick={() => handlDelete(emprunt.idEmprunt)} className='btn btn-sm btn-danger'>Suppr</button>
-                                    </td>
+        <div className='App'>
+            <Container maxW={'full'} p="4" fontSize={'18px'}>
+                <Box rounded="lg" boxShadow="base" p="4" maxW={'full'}>
+                    <Text fontSize="xl" fontWeight="bold">Gestion d'emprunt</Text>
+                    <Box rounded="lg" boxShadow="base" p="4">
+                        <Box mt="2" gap={'2'} mb="4" display={'flex'}>
+                            <FormControl>
+                                <Input type='text' />
+                            </FormControl>
+                            <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline'
+                                maxW="300px" minW="150px">
+                                Search
+                            </Button>
+                        </Box>
+                    </Box>
+                    <Box mt="5" rounded={'lg'} boxShadow="base">
+                        <Box p="4" display={'flex'} justifyContent="space-between">
+                            <Text fontSize="xl" fontWeight="bold">
+                                Liste des emprunts
+                            </Text>
+                            <Button leftIcon={<AiOutlinePlus fontSize={'20px'} />} colorScheme="teal" variant="outline" maxW="300px"
+                                minW="150px">Add User
+                            </Button>
+                        </Box>
+                        <table className='table'>
+                            <thead>
+                                <tr>
+                                    <th>Numéro d'emprunteur</th>
+                                    <th>Numéro d'exemplaire</th>
+                                    <th>Nombre</th>
+                                    <th>Date d'emprunt</th>
+                                    <th>Date de retour</th>
+                                    <th>Actions</th>
                                 </tr>
-                            })
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                            </thead>
+                            <tbody>
+                                {
+                                    data.map((emprunt, index) => {
+                                        return <tr key={index}>
+                                            <td>{emprunt.idEmprunteur}</td>
+                                            <td>{emprunt.idExemplaire}</td>
+                                            <td>{emprunt.qteEmprunt}</td>
+                                            <td>{dateFormat(emprunt.dateEmprunt, 'dd/mm/yyyy')}</td>
+                                            <td>{dateFormat(emprunt.dateRetour, 'dd/mm/yyyy')}</td>
+                                            <td>
+                                                <Link to={`emprunt/edit/${emprunt.idEmprunt}`} className='btn btn btn-primary'><AiFillEdit /></Link>
+                                                <button onClick={() => handlDelete(emprunt.idEmprunt)} className='btn btn btn-danger'><AiFillDelete /></button>
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>Numéro d'emprunteur</td>
+                                    <td>Numéro d'exemplaire</td>
+                                    <td>Nombre</td>
+                                    <td>Date d'emprunt</td>
+                                    <td>Date de retour</td>
+                                    <td>Actions</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </Box>
+                </Box>
+            </Container >
+        </div >
     )
 }
 

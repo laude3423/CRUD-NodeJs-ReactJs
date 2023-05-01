@@ -1,4 +1,16 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
 :root{
   --background:#ffffff;
   --text-primary:#000;
@@ -84,6 +96,17 @@ a{
   font-size: .8rem;
   transition: all .5s;
 }
+.main{
+  margin-top: 0px;
+  height: 100vh;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  font-size: .8rem;
+  transition: all .5s;
+}
 .login h1{
   align-items: center;
   align-content: center;
@@ -108,6 +131,21 @@ h2{
 }
 .table-ligh{
   background: var(--sidebar-background);
+}
+th{
+  font-size: 17px;
+  font-weight: 900;
+  color: #000;
+}
+td{
+  font-size: 14px;
+  font-weight: bold;
+  color: #5c5757;
+}
+tfoot{
+  font-size: 14px;
+  font-weight: 900;
+  color: #000;
 }
 .containe{
   display: flex;
