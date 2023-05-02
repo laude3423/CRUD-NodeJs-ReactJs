@@ -3,9 +3,6 @@ import './index.css';
 import './App.css';
 import Home from './pages/users/Home';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Ajout from './pages/users/Ajout';
-import Detail from './pages/users/Detail';
-import Editer from './pages/users/Editer';
 import Livre from './pages/livre/Livre';
 import AjoutLivre from './pages/livre/AjoutLivre';
 import ModeLivre from './pages/livre/ModeLivre';
@@ -28,9 +25,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="users/acceuil" element={<Acceuil />} />
-          <Route path="users/create" element={<Ajout />} />
-          <Route path="users/detail/:id" element={<Detail />} />
-          <Route path="users/edit/:id" element={<Editer />} />
 
           <Route path="/livre" element={<Livre />} />
           <Route path="/livre/create" element={<AjoutLivre />} />
