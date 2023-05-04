@@ -3,6 +3,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { AiFillDelete, AiFillEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import dateFormat from 'dateformat';
+import Datepicker from 'react-datepicker';
 import {
     Modal,
     ModalOverlay,
@@ -15,11 +16,13 @@ import {
     useToast,
     useDisclosure
 } from '@chakra-ui/react';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Emprunt = () => {
     const [emprunteurAPI, setEmprunteur] = useState([]);
     const [livreAPI, setLivre] = useState([]);
     const [empruntAPI, setEmprunt] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(null);
 
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -203,12 +206,20 @@ const Emprunt = () => {
                                         <Input type='number' placeholder="Veuillez entrer le nombre emprunté!" name='qteEmprunt' onChange={e => setValues({ ...values, qteEmprunt: e.target.value })} value={values.qteEmprunt} />
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>Date d'emprunt</FormLabel>
-                                        <Input type='date' name='dateEmprunt' onChange={e => setValues({ ...values, dateEmprunt: e.target.value })} value={values.dateEmprunt} />
+                                        <label>Date d'emprunt</label>
+                                        <div className='form-control'>
+                                            <Datepicker selected={selectedDate} onChange={date => setSelectedDate(date)} className='dateEmprunt' name='dateEmprunt' value={dateFormat(values.dateEmprunt, 'dd/mm/yyyy')} placeholder='jj/mm/aaaa'
+                                                dateFormat="dd/MM/yyyy"
+                                            />
+                                        </div>
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>Date de retour</FormLabel>
-                                        <Input type='date' name='dateRetour' onChange={e => setValues({ ...values, dateRetour: e.target.value })} value={values.dateRetour} />
+                                        <label>Date de retour</label>
+                                        <div className='form-control'>
+                                            <Datepicker selected={selectedDate} onChange={date => setSelectedDate(date)} className='dateEmprunt' name='dateRetour' value={dateFormat(values.dateRetour, 'dd/mm/yyyy')} placeholder='jj/mm/aaaa'
+                                                dateFormat="dd/MM/yyyy"
+                                            />
+                                        </div>
                                     </FormControl>
                                 </ModalBody>
 

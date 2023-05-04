@@ -21,13 +21,44 @@ const Livre = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
+
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 4;
+    const lastIndex = currentPage * recordsPerPage;
+    const firstIndex = lastIndex - recordsPerPage;
+    const records = data.slice(firstIndex, lastIndex);
+    const npage = Math.ceil(data.length / recordsPerPage);
+    const numbers = [...Array(npage + 1).keys()].slice(1);
+
+    const changePage = (id) => {
+        setCurrentPage(id)
+    }
+    const prevPage = () => {
+        if (currentPage !== 1) {
+            setCurrentPage(currentPage - 1)
+        }
+    }
+    const nextPage = () => {
+        if (currentPage !== npage) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
+    //pagination
+    const recherche = () => {
+        axios.get(`http://localhost:8081/livre`, values)
+            .then(res => setData(res.data))
+            .catch(err => console.log(err));
+    }
+
     const [values, setValues] = useState({
         idLivre: '',
         titreLivre: '',
         auteurLivre: '',
         editeurLivre: '',
         nombre: '',
-        dateParution: ''
+        dateParution: '',
+        search: ''
     });
     const onUpdate = (id) => {
         console.log(id);
@@ -63,7 +94,7 @@ const Livre = () => {
             .catch(err => console.log(err))
     }
     const getList = () => {
-        axios.get('http://localhost:8081/livre')
+        axios.get(`http://localhost:8081/livre`)
             .then(res => setData(res.data))
             .catch(err => console.log(err));
     }
@@ -99,9 +130,9 @@ const Livre = () => {
                     <Box rounded="lg" boxShadow="base" p="4">
                         <Box mt="2" gap={'2'} mb="4" display={'flex'}>
                             <FormControl>
-                                <Input type='text' />
+                                <Input type='text' onChange={e => setValues({ ...values, search: e.target.value })} placeholder='Recherche par titre de livre!' />
                             </FormControl>
-                            <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline'
+                            <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline' onClick={recherche}
                                 maxW="300px" minW="150px">
                                 Search
                             </Button>
@@ -130,7 +161,7 @@ const Livre = () => {
                             </thead>
                             <tbody>
                                 {
-                                    data.map((livre, index) => {
+                                    records.map((livre, index) => {
                                         return <tr key={index}>
                                             <td>{livre.titreLivre}</td>
                                             <td>{livre.auteurLivre}</td>
@@ -145,17 +176,29 @@ const Livre = () => {
                                     })
                                 }
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td>Titre</td>
-                                    <td>Auteur</td>
-                                    <td>Editeur</td>
-                                    <td>Nombre d'exemplaire</td>
-                                    <td>Date parution</td>
-                                    <td>Actions</td>
-                                </tr>
-                            </tfoot>
                         </table>
+                        <nav>
+                            <ul className='pagination'>
+                                <li className='page-item'>
+                                    <a haref='#' className='page-link' onClick={prevPage}>
+                                        Precedent</a>
+                                </li>
+                                {
+                                    numbers.map((n, i) => (
+                                        <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
+                                            <a href='#' className='page-link'
+                                                onClick={() => changePage(n)}
+                                            >{n}</a>
+                                        </li>
+                                    ))
+                                }
+                                <li className='page-item'>
+                                    <a haref='#' className='page-link' onClick={nextPage}>
+                                        Suivant</a>
+                                </li>
+                            </ul>
+                        </nav>
+
                         <Modal
                             initialFocusRef={initialRef}
                             finalFocusRef={finalRef}

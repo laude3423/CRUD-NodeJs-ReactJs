@@ -163,6 +163,18 @@ tfoot{
   background: var(--form-bg);
 
 }
+.dateEmprunt{
+  border-radius: 2px;
+  border-color: #808080;
+  width: 380px;
+  height: 28px;
+}
+.dateRetour{
+  border-radius: 2px;
+  border-color: #808080;
+  width: 380px;
+  height: 28px;
+}
 .top{
   display: flex;
   justify-content: space-between;
