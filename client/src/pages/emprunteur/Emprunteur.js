@@ -2,15 +2,74 @@ import { Box, Button, Container, FormControl, Input, Text } from '@chakra-ui/rea
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { AiFillDelete, AiFillEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
-import { Link } from 'react-router-dom'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    FormLabel,
+    useToast,
+    useDisclosure
+} from '@chakra-ui/react';
 
 const Emprunteur = () => {
     const [data, setData] = useState([])
-
-    useEffect(() => {
+    const toast = useToast();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const initialRef = React.useRef(null);
+    const finalRef = React.useRef(null);
+    const [values, setValues] = useState({
+        idEmp: '',
+        nomEmprunteur: '',
+        prenomEmprunteur: '',
+        telEmprunteur: '',
+        adresseEmprunteur: ''
+    });
+    const onUpdate = (id) => {
+        axios.put('http://localhost:8081/updateEmprunteur/' + id, values)
+            .then(res => {
+                console.log(res);
+                toast({
+                    position: "top",
+                    title: 'Modification avec succès!',
+                    status: 'success',
+                    duration: 4000,
+                    isClosable: true,
+                });
+                onClose();
+                getList();
+            })
+            .catch(err => console.log(err))
+    }
+    const onAdd = () => {
+        axios.post('http://localhost:8081/insertEmprunteur', values)
+            .then(res => {
+                console.log(res);
+                toast({
+                    position: "top",
+                    title: 'Insetion avec succès!',
+                    status: 'success',
+                    duration: 4000,
+                    isClosable: true,
+                });
+                onClose();
+                getList();
+            })
+            .catch(err => console.log(err))
+    }
+    const getList = () => {
         axios.get('http://localhost:8081/emprunteur/')
             .then(res => setData(res.data))
             .catch(err => console.log(err));
+    }
+    const handlEdit = (emprunteur) => {
+        setValues({ ...values, idEmp: emprunteur.idEmprunteur, nomEmprunteur: emprunteur.nomEmprunteur, prenomEmprunteur: emprunteur.prenomEmprunteur, telEmprunteur: emprunteur.telEmprunteur, adresseEmprunteur: emprunteur.adresseEmprunteur });
+    }
+    useEffect(() => {
+        getList();
     }, [])
 
     const handlDelete = (id) => {
@@ -43,8 +102,8 @@ const Emprunteur = () => {
                             <Text fontSize="xl" fontWeight="bold">
                                 Liste des emprunteurs
                             </Text>
-                            <Button leftIcon={<AiOutlinePlus fontSize={'20px'} />} colorScheme="teal" variant="outline" maxW="300px"
-                                minW="150px">Add User
+                            <Button leftIcon={<AiOutlinePlus fontSize={'20px'} />} onClick={onOpen} colorScheme="teal" variant="outline" maxW="300px"
+                                minW="150px">Nouveau(+)
                             </Button>
                         </Box>
 
@@ -67,7 +126,7 @@ const Emprunteur = () => {
                                             <td>{emprunteur.telEmprunteur}</td>
                                             <td>{emprunteur.adresseEmprunteur}</td>
                                             <td>
-                                                <Link to={`emprunteur/edit/${emprunteur.idEmprunteur}`} className='btn btn btn-primary'><AiFillEdit /></Link>
+                                                <button onClick={() => { handlEdit(emprunteur); onOpen(); }} className='btn btn btn-primary'><AiFillEdit /></button>
                                                 <button onClick={() => handlDelete(emprunteur.idEmprunteur)} className='btn btn btn-danger'><AiFillDelete /></button>
                                             </td>
                                         </tr>
@@ -84,6 +143,47 @@ const Emprunteur = () => {
                                 </tr>
                             </tfoot>
                         </table>
+                        <Modal
+                            initialFocusRef={initialRef}
+                            finalFocusRef={finalRef}
+                            isOpen={isOpen}
+                            onClose={onClose}
+                        >
+                            <ModalOverlay />
+                            <ModalContent>
+                                <ModalHeader>Ajout/Modification</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody pb={6}>
+                                    <FormControl>
+                                        <Input type='hidden' onChange={e => setValues({ ...values, idEmp: e.target.value })} value={values.idEmp} />
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Nom</FormLabel>
+                                        <Input ref={initialRef} type='text' placeholder="Veuillez entrer ici le nom!" name='nomEmprunteur' onChange={e => setValues({ ...values, nomEmprunteur: e.target.value })} value={values.nomEmprunteur} />
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Prénom</FormLabel>
+                                        <Input type={'text'} placeholder="Veuillez entrer ici le prénom!" name='prenomEmprunteur' onChange={e => setValues({ ...values, prenomEmprunteur: e.target.value })} value={values.prenomEmprunteur} />
+                                    </FormControl>
+
+                                    <FormControl>
+                                        <FormLabel>Téléphone</FormLabel>
+                                        <Input type='text' placeholder="Veuillez entrer ici le numéro téléphone!" name='telEmprunteur' onChange={e => setValues({ ...values, telEmprunteur: e.target.value })} value={values.telEmprunteur} />
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Adresse</FormLabel>
+                                        <Input type='text' placeholder="Veuillez entrer ici l'adresse!" name='adresseEmprunteur' onChange={e => setValues({ ...values, adresseEmprunteur: e.target.value })} value={values.adresseEmprunteur} />
+                                    </FormControl>
+                                </ModalBody>
+
+                                <ModalFooter>
+                                    <Button colorScheme='blue' mr={3} onClick={() => (values.idEmp ? onUpdate(values.idEmp) : onAdd())}>
+                                        Save
+                                    </Button>
+                                    <Button onClick={onClose}>Cancel</Button>
+                                </ModalFooter>
+                            </ModalContent>
+                        </Modal>
                     </Box>
                 </Box>
             </Container>

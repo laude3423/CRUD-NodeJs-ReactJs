@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../index.css';
-import { FaTh, FaBars, FaShoppingBag, FaMoon, FaCommentAlt, FaRegChartBar, FaUserAlt, FaUserLock } from "react-icons/fa";
+import { FaTh, FaBars, FaShoppingBag, FaMoon, FaRegChartBar, FaUserAlt, FaUserLock } from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 import useLocalStorage from 'use-local-storage';
 
@@ -14,39 +14,6 @@ const Sidebar = ({ children }) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
-
-    const menutem = [
-        {
-            path: '/',
-            name: "Loging",
-            icon: <FaUserLock />
-        },
-        {
-            path: '/acceuil',
-            name: "Acceuil",
-            icon: <FaTh />
-        },
-        {
-            path: '/emprunt_audit',
-            name: "EmpruntAudit",
-            icon: <FaUserAlt />
-        },
-        {
-            path: '/emprunteur_audit',
-            name: "EmprunteurAudit",
-            icon: <FaRegChartBar />
-        },
-        {
-            path: '/exemplaire_audit',
-            name: "ExemplaireAudit",
-            icon: <FaCommentAlt />
-        },
-        {
-            path: '/livre_audit',
-            name: "Livre",
-            icon: <FaShoppingBag />
-        },
-    ]
 
 
     const menuItem = [
@@ -69,11 +36,6 @@ const Sidebar = ({ children }) => {
             path: '/emprunteur',
             name: "Emprunteur",
             icon: <FaRegChartBar />
-        },
-        {
-            path: '/exemplaire',
-            name: "Exemplaire",
-            icon: <FaCommentAlt />
         },
         {
             path: '/livre',

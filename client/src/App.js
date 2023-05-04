@@ -12,9 +12,6 @@ import AjoutEmprunt from './pages/emprunt/AjoutEmprunt';
 import Emprunteur from './pages/emprunteur/Emprunteur';
 import EditEmprunteur from './pages/emprunteur/EditEmprunteur';
 import AjoutEmprunteur from './pages/emprunteur/AjoutEmprunteur';
-import AjoutExemplaire from './pages/exemplaire/AjoutExemplaire';
-import EditExemplaire from './pages/exemplaire/EditExemplaire';
-import Exemplaire from './pages/exemplaire/Exemplaire';
 import Sidebar from './components/Sidebar';
 import Acceuil from './admin/Acceuil';
 
@@ -37,10 +34,6 @@ function App() {
           <Route path="/emprunteur" element={<Emprunteur />} />
           <Route path="/emprunteur/create" element={<AjoutEmprunteur />} />
           <Route path="/emprunteur/edit/:id" element={<EditEmprunteur />} />
-
-          <Route path="/exemplaire" element={<Exemplaire />} />
-          <Route path="/exemplaire/create" element={<AjoutExemplaire />} />
-          <Route path="/exemplaire/edit/:id" element={<EditExemplaire />} />
 
         </Routes>
       </Sidebar>
