@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import dateFormat from 'dateformat';
 import { Box, Button, Container, FormControl, Input, Text } from '@chakra-ui/react';
-import { AiFillDelete, AiOutlinePlus, AiOutlineSearch, AiFillEdit } from 'react-icons/ai';
+import { AiFillDelete, AiOutlinePlus, AiOutlineSearch, AiFillEdit, AiOutlineReload } from 'react-icons/ai';
 import {
     Modal,
     ModalOverlay,
@@ -21,6 +21,7 @@ const Livre = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
+    const [search, setSearch] = useState("")
 
     //pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -46,8 +47,11 @@ const Livre = () => {
     }
     //pagination
     const recherche = () => {
-        axios.get(`http://localhost:8081/livre`, values)
-            .then(res => setData(res.data))
+        axios.get('http://localhost:8081/searchLivre/' + search)
+            .then(res => {
+                setData(res.data)
+                setSearch("");
+            })
             .catch(err => console.log(err));
     }
 
@@ -57,8 +61,7 @@ const Livre = () => {
         auteurLivre: '',
         editeurLivre: '',
         nombre: '',
-        dateParution: '',
-        search: ''
+        dateParution: ''
     });
     const onUpdate = (id) => {
         console.log(id);
@@ -74,6 +77,7 @@ const Livre = () => {
                 });
                 onClose();
                 getList();
+                vider();
             })
             .catch(err => console.log(err))
     }
@@ -90,6 +94,7 @@ const Livre = () => {
                 });
                 onClose();
                 getList();
+                vider();
             })
             .catch(err => console.log(err))
     }
@@ -97,6 +102,10 @@ const Livre = () => {
         axios.get(`http://localhost:8081/livre`)
             .then(res => setData(res.data))
             .catch(err => console.log(err));
+
+    }
+    const vider = () => {
+        setValues("");
     }
     const handlEdit = (livre1) => {
         setValues({ ...values, idLivre: livre1.idLivre, titreLivre: livre1.titreLivre, auteurLivre: livre1.auteurLivre, editeurLivre: livre1.editeurLivre, nombre: livre1.nombre, dateParution: livre1.dateParution });
@@ -130,11 +139,15 @@ const Livre = () => {
                     <Box rounded="lg" boxShadow="base" p="4">
                         <Box mt="2" gap={'2'} mb="4" display={'flex'}>
                             <FormControl>
-                                <Input type='text' onChange={e => setValues({ ...values, search: e.target.value })} placeholder='Recherche par titre de livre!' />
+                                <input type={'text'} name='src' onChange={(e) => setSearch(e.target.value)} className='form-control' placeholder="Tapez ici le titre du livre à chercher ...." value={search} />
                             </FormControl>
                             <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline' onClick={recherche}
                                 maxW="300px" minW="150px">
                                 Search
+                            </Button>
+                            <Button leftIcon={<AiOutlineReload />} colorScheme='teal' variant='outline' onClick={getList}
+                                maxW="300px" minW="150px">
+                                Actualiser
                             </Button>
                         </Box>
                     </Box>
@@ -144,7 +157,7 @@ const Livre = () => {
                                 Liste des livres
                             </Text>
                             <Button leftIcon={<AiOutlinePlus fontSize={'20px'} />} onClick={onOpen} colorScheme="teal" variant="outline" maxW="300px"
-                                minW="150px">Add User
+                                minW="150px">Nouveau
                             </Button>
                         </Box>
 
@@ -180,21 +193,19 @@ const Livre = () => {
                         <nav>
                             <ul className='pagination'>
                                 <li className='page-item'>
-                                    <a haref='#' className='page-link' onClick={prevPage}>
-                                        Precedent</a>
+                                    <a className='page-link' onClick={prevPage}> Precedent</a>
                                 </li>
                                 {
                                     numbers.map((n, i) => (
                                         <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
+                                            <a className='page-link'
                                                 onClick={() => changePage(n)}
                                             >{n}</a>
                                         </li>
                                     ))
                                 }
                                 <li className='page-item'>
-                                    <a haref='#' className='page-link' onClick={nextPage}>
-                                        Suivant</a>
+                                    <a className='page-link' onClick={nextPage}>Suivant</a>
                                 </li>
                             </ul>
                         </nav>
@@ -232,7 +243,7 @@ const Livre = () => {
                                     </FormControl>
                                     <FormControl>
                                         <FormLabel>Date de parution</FormLabel>
-                                        <Input type='date' placeholder="Veuillez entrer ici le date de parution!" name='dateParution' onChange={e => setValues({ ...values, dateParution: e.target.value })} value={values.dateParution} />
+                                        <Input type='date' placeholder="Veuillez entrer ici le date de parution!" name='dateParution' onChange={e => setValues({ ...values, dateParution: e.target.value })} value={dateFormat(values.dateParution, 'dd/mm/yyyy')} />
                                     </FormControl>
                                 </ModalBody>
 

@@ -1,7 +1,7 @@
 import { Box, Button, Container, FormControl, Input, Text } from '@chakra-ui/react'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { AiFillDelete, AiFillEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
+import { AiFillDelete, AiFillEdit, AiOutlinePlus, AiOutlineReload, AiOutlineSearch } from 'react-icons/ai';
 import {
     Modal,
     ModalOverlay,
@@ -21,6 +21,8 @@ const Emprunteur = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
+    const [search, setSearch] = useState("")
+
     const [values, setValues] = useState({
         idEmp: '',
         nomEmprunteur: '',
@@ -28,6 +30,37 @@ const Emprunteur = () => {
         telEmprunteur: '',
         adresseEmprunteur: ''
     });
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 4;
+    const lastIndex = currentPage * recordsPerPage;
+    const firstIndex = lastIndex - recordsPerPage;
+    const records = data.slice(firstIndex, lastIndex);
+    const npage = Math.ceil(data.length / recordsPerPage);
+    const numbers = [...Array(npage + 1).keys()].slice(1);
+
+    const changePage = (id) => {
+        setCurrentPage(id)
+    }
+    const prevPage = () => {
+        if (currentPage !== 1) {
+            setCurrentPage(currentPage - 1)
+        }
+    }
+    const nextPage = () => {
+        if (currentPage !== npage) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
+    //pagination
+    const recherche = () => {
+        axios.get('http://localhost:8081/searchEmprunteur/' + search)
+            .then(res => {
+                setData(res.data)
+                setSearch("");
+            })
+            .catch(err => console.log(err));
+    }
     const onUpdate = (id) => {
         axios.put('http://localhost:8081/updateEmprunteur/' + id, values)
             .then(res => {
@@ -41,6 +74,7 @@ const Emprunteur = () => {
                 });
                 onClose();
                 getList();
+                vider();
             })
             .catch(err => console.log(err))
     }
@@ -57,6 +91,7 @@ const Emprunteur = () => {
                 });
                 onClose();
                 getList();
+                vider();
             })
             .catch(err => console.log(err))
     }
@@ -67,6 +102,9 @@ const Emprunteur = () => {
     }
     const handlEdit = (emprunteur) => {
         setValues({ ...values, idEmp: emprunteur.idEmprunteur, nomEmprunteur: emprunteur.nomEmprunteur, prenomEmprunteur: emprunteur.prenomEmprunteur, telEmprunteur: emprunteur.telEmprunteur, adresseEmprunteur: emprunteur.adresseEmprunteur });
+    }
+    const vider = () => {
+        setValues("");
     }
     useEffect(() => {
         getList();
@@ -89,11 +127,15 @@ const Emprunteur = () => {
                     <Box rounded="lg" boxShadow="base" p="4">
                         <Box mt="2" gap={'2'} mb="4" display={'flex'}>
                             <FormControl>
-                                <Input type='text' />
+                                <input type={'text'} name='src' onChange={(e) => setSearch(e.target.value)} className='form-control' placeholder="Tapez ici le titre du livre à chercher ...." value={search} />
                             </FormControl>
-                            <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline'
+                            <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline' onClick={recherche}
                                 maxW="300px" minW="150px">
                                 Search
+                            </Button>
+                            <Button leftIcon={<AiOutlineReload />} colorScheme='teal' variant='outline' onClick={getList}
+                                maxW="300px" minW="150px">
+                                Actualiser
                             </Button>
                         </Box>
                     </Box>
@@ -119,7 +161,7 @@ const Emprunteur = () => {
                             </thead>
                             <tbody>
                                 {
-                                    data.map((emprunteur, index) => {
+                                    records.map((emprunteur, index) => {
                                         return <tr key={index}>
                                             <td>{emprunteur.nomEmprunteur}</td>
                                             <td>{emprunteur.prenomEmprunteur}</td>
@@ -133,16 +175,26 @@ const Emprunteur = () => {
                                     })
                                 }
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td>Nom</td>
-                                    <td>Prénom</td>
-                                    <td>Téléphone</td>
-                                    <td>Adresse</td>
-                                    <td>Actions</td>
-                                </tr>
-                            </tfoot>
                         </table>
+                        <nav>
+                            <ul className='pagination'>
+                                <li className='page-item'>
+                                    <a className='page-link' onClick={prevPage}> Precedent</a>
+                                </li>
+                                {
+                                    numbers.map((n, i) => (
+                                        <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
+                                            <a className='page-link'
+                                                onClick={() => changePage(n)}
+                                            >{n}</a>
+                                        </li>
+                                    ))
+                                }
+                                <li className='page-item'>
+                                    <a className='page-link' onClick={nextPage}>Suivant</a>
+                                </li>
+                            </ul>
+                        </nav>
                         <Modal
                             initialFocusRef={initialRef}
                             finalFocusRef={finalRef}

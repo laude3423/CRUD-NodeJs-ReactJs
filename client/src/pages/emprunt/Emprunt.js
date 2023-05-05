@@ -1,7 +1,7 @@
 import { Box, Button, Container, FormControl, Input, Select, Text } from '@chakra-ui/react'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { AiFillDelete, AiFillEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
+import { AiFillDelete, AiFillEdit, AiOutlinePlus, AiOutlineSearch, AiOutlineReload } from 'react-icons/ai';
 import dateFormat from 'dateformat';
 import Datepicker from 'react-datepicker';
 import {
@@ -28,6 +28,7 @@ const Emprunt = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
+    const [search, setSearch] = useState("")
 
     const [values, setValues] = useState({
         idEmp: '',
@@ -38,6 +39,37 @@ const Emprunt = () => {
         dateRetour: '',
         titreLivre: '',
     });
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 4;
+    const lastIndex = currentPage * recordsPerPage;
+    const firstIndex = lastIndex - recordsPerPage;
+    const records = empruntAPI.slice(firstIndex, lastIndex);
+    const npage = Math.ceil(empruntAPI.length / recordsPerPage);
+    const numbers = [...Array(npage + 1).keys()].slice(1);
+
+    const changePage = (id) => {
+        setCurrentPage(id)
+    }
+    const prevPage = () => {
+        if (currentPage !== 1) {
+            setCurrentPage(currentPage - 1)
+        }
+    }
+    const nextPage = () => {
+        if (currentPage !== npage) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
+    //pagination
+    const recherche = () => {
+        axios.get('http://localhost:8081/searchDate/' + search)
+            .then(res => {
+                setEmprunt(res.data)
+                setSearch("");
+            })
+            .catch(err => console.log(err));
+    }
     const onUpdate = (id) => {
         axios.put('http://localhost:8081/updateEmprunt/' + id, values)
             .then(res => {
@@ -51,6 +83,7 @@ const Emprunt = () => {
                 });
                 onClose();
                 getList();
+                vider();
             })
             .catch(err => console.log(err))
     }
@@ -68,8 +101,12 @@ const Emprunt = () => {
                 });
                 onClose();
                 getList();
+                vider();
             })
             .catch(err => console.log(err))
+    }
+    const vider = () => {
+        setValues("");
     }
     const getList = () => {
         let endpoints = ['http://localhost:8081/emprunt/', 'http://localhost:8081/emprunteur/', 'http://localhost:8081/livre/'];
@@ -108,11 +145,15 @@ const Emprunt = () => {
                     <Box rounded="lg" boxShadow="base" p="4">
                         <Box mt="2" gap={'2'} mb="4" display={'flex'}>
                             <FormControl>
-                                <Input type='text' />
+                                <input type={'text'} name='src' onChange={(e) => setSearch(e.target.value)} className='form-control' placeholder="Tapez ici le titre du livre à chercher ...." value={search} />
                             </FormControl>
-                            <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline'
+                            <Button leftIcon={<AiOutlineSearch />} colorScheme='teal' variant='outline' onClick={recherche}
                                 maxW="300px" minW="150px">
                                 Search
+                            </Button>
+                            <Button leftIcon={<AiOutlineReload />} colorScheme='teal' variant='outline' onClick={getList}
+                                maxW="300px" minW="150px">
+                                Actualiser
                             </Button>
                         </Box>
                     </Box>
@@ -128,8 +169,8 @@ const Emprunt = () => {
                         <table className='table'>
                             <thead>
                                 <tr>
-                                    <th>Numéro d'emprunteur</th>
-                                    <th>Numéro du livre</th>
+                                    <th>Nom d'emprunteur</th>
+                                    <th>Nom du livre</th>
                                     <th>Nombre</th>
                                     <th>Date d'emprunt</th>
                                     <th>Date de retour</th>
@@ -138,13 +179,13 @@ const Emprunt = () => {
                             </thead>
                             <tbody>
                                 {
-                                    empruntAPI.map((emprunt, index) => {
+                                    records.map((emprunt, index) => {
                                         return <tr key={index}>
-                                            <td>{emprunt.idEmprunteur}</td>
-                                            <td>{emprunt.idLivre}</td>
-                                            <td>{emprunt.qteEmprunt}</td>
-                                            <td>{dateFormat(emprunt.dateEmprunt, 'dd/mm/yyyy')}</td>
-                                            <td>{dateFormat(emprunt.dateRetour, 'dd/mm/yyyy')}</td>
+                                            <td>{emprunt.nom}</td>
+                                            <td>{emprunt.titre}</td>
+                                            <td>{emprunt.qte}</td>
+                                            <td>{dateFormat(emprunt.date, 'dd/mm/yyyy')}</td>
+                                            <td>{dateFormat(emprunt.retour, 'dd/mm/yyyy')}</td>
                                             <td>
                                                 <button onClick={() => { handlEdit(emprunt); onOpen(); }} className='btn btn btn-primary'><AiFillEdit /></button>
                                                 <button onClick={() => handlDelete(emprunt.idEmprunt)} className='btn btn btn-danger'><AiFillDelete /></button>
@@ -153,17 +194,26 @@ const Emprunt = () => {
                                     })
                                 }
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td>Numéro d'emprunteur</td>
-                                    <td>Numéro du livre</td>
-                                    <td>Nombre</td>
-                                    <td>Date d'emprunt</td>
-                                    <td>Date de retour</td>
-                                    <td>Actions</td>
-                                </tr>
-                            </tfoot>
                         </table>
+                        <nav>
+                            <ul className='pagination'>
+                                <li className='page-item'>
+                                    <a className='page-link' onClick={prevPage}> Precedent</a>
+                                </li>
+                                {
+                                    numbers.map((n, i) => (
+                                        <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
+                                            <a className='page-link'
+                                                onClick={() => changePage(n)}
+                                            >{n}</a>
+                                        </li>
+                                    ))
+                                }
+                                <li className='page-item'>
+                                    <a className='page-link' onClick={nextPage}>Suivant</a>
+                                </li>
+                            </ul>
+                        </nav>
                         <Modal
                             initialFocusRef={initialRef}
                             finalFocusRef={finalRef}
