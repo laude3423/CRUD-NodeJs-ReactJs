@@ -20,12 +20,22 @@ app.get("/livre", (req, res) => {
         return res.json(result);
     })
 });
+app.get("/searchLivre/:search", (req, res) => {
+    const sql = "SELECT * FROM livre WHERE titreLivre LIKE ?";
+    const id = req.params.search;
+    db.query(sql, ["%" + id + "%"], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+});
+
 app.post("/insertLivre", (req, res) => {
-    const sql = "INSERT INTO livre(`titreLivre`,`auteurLivre`,`editeurLivre`,`dateParution`) VALUES(?)";
+    const sql = "INSERT INTO livre(`titreLivre`,`auteurLivre`,`editeurLivre`,`nombre`,`dateParution`) VALUES(?)";
     const values = [
         req.body.titreLivre,
         req.body.auteurLivre,
         req.body.editeurLivre,
+        req.body.nombre,
         req.body.dateParution
     ]
     db.query(sql, [values], (err, result) => {
@@ -33,17 +43,18 @@ app.post("/insertLivre", (req, res) => {
         return res.json(result);
     })
 })
-app.put("/updateLivre/:idLivre", (req, res) => {
-    const sql = "UPDATE livre SET `titreLivre=?`, `auteurLivre`=?,`editeurLivre`=?,`dateParution`=? WHERE idLivre=?";
-    const id = req.body.idLivre;
-    db.query(sql, [req.body.titreLivre, req.body.auteurLivre, req.body.auteurLivre, req.body.editeurLivre, req.body.dateParution, id], (err, result) => {
+app.put('/updateLivre/:id', (req, res) => {
+    const sql = "UPDATE livre SET `titreLivre=?`, `auteurLivre`=?,`editeurLivre`=?,`nombre`=?,`dateParution`=? WHERE idLivre=?";
+    const id = req.params.id;
+    db.query(sql, [req.body.titreLivre, req.body.auteurLivre, req.body.editeurLivre, req.body.nombre, req.body.dateParution, id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
 })
-app.delete('/deleteLivre/:idLivre', (req, res) => {
+
+app.delete('/deleteLivre/:id', (req, res) => {
     const sql = "DELETE FROM livre WHERE idLivre = ?";
-    const id = req.params.idLivre
+    const id = req.params.id
 
     db.query(sql, [id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
@@ -51,18 +62,26 @@ app.delete('/deleteLivre/:idLivre', (req, res) => {
     })
 })
 //emprunteur
-app.get("emprunteur", (req, res) => {
+app.get("/emprunteur", (req, res) => {
     const sql = "SELECT * FROM emprunteur";
     db.query(sql, (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
 })
+app.get("/searchEmprunteur/:search", (req, res) => {
+    const sql = "SELECT * FROM emprunteur WHERE nomEmprunteur LIKE ?";
+    const id = req.params.search;
+    db.query(sql, ["%" + id + "%"], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+});
 app.post("/insertEmprunteur", (req, res) => {
     const sql = "INSERT INTO emprunteur(`nomEmprunteur`,`prenomEmprunteur`,`telEmprunteur`,`adresseEmprunteur`) VALUES(?)";
     const values = [
         req.body.nomEmprunteur,
-        req.body.nomEmprunteur,
+        req.body.prenomEmprunteur,
         req.body.telEmprunteur,
         req.body.adresseEmprunteur
     ]
@@ -71,10 +90,11 @@ app.post("/insertEmprunteur", (req, res) => {
         return res.json(result);
     })
 })
-app.put('updateEmprunteur/:idEmprunteur', (req, res) => {
-    const sql = "UPDATE emprunteur SET `nomEmprunteur`=?,`prenomEmprunteur`=?,`telEmprunteur`=?,`adresseEmprunteur`=? WHERE `idEmprunteur`=?";
-    const id = req.body.idEmprunteur;
-    db.query(sq, [req.body.nomEmprunteur, req.body.prenomEmprunteur, req.body.telEmprunteur, req.body.adresseEmprunteur, idEmprunteur], (err, result) => {
+
+app.put('/updateEmprunteur/:id', (req, res) => {
+    const sql = "UPDATE emprunteur SET `nomEmprunteur`=?,`prenomEmprunteur`=?,`telEmprunteur`=?,`adresseEmprunteur`=? WHERE idEmprunteur=?";
+    const id = req.params.id;
+    db.query(sql, [req.body.nomEmprunteur, req.body.prenomEmprunteur, req.body.telEmprunteur, req.body.adresseEmprunteur, id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
@@ -91,17 +111,27 @@ app.delete('/deleteEmprunteur/:idEmprunteur', (req, res) => {
 })
 //emprunt
 app.get("/emprunt", (req, res) => {
-    const sql = "SELECT * FROM emprunt";
+    const sql = "SELECT livre.titreLivre AS titre, emprunteur.nomEmprunteur AS nom, emprunt.qteEmprunt AS qte, emprunt.dateEmprunt AS date, emprunt.dateRetour AS retour FROM emprunt, emprunteur, livre WHERE emprunt.idLivre=livre.idLivre AND emprunt.idEmprunteur=emprunteur.idEmprunteur";
     db.query(sql, (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
 })
-app.post("/insertEmprunt", (err, result) => {
-    const sql = "INSERT INTO emprunt(`idExemplaire`,`idEmprunteur`,`dateEmprunt`,`dateRetour`) VALUES(?)";
+app.get("/searchDate", (req, res) => {
+    const sql = "SELECT * FROM emprunt WHERE dateEmprunt BETWEEN ? AND ?";
+    const id = req.body.date1;
+    const id2 = req.body.date1;
+    db.query(sql, [id, id2], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+});
+app.post("/insertEmprunt", (req, res) => {
+    const sql = "INSERT INTO emprunt(`idEmprunteur`,`idLivre`,`qteEmprunt`,`dateEmprunt`,`dateRetour`) VALUES(?)";
     const values = [
-        req.body.idExemplaire,
         req.body.idEmprunteur,
+        req.body.idLivre,
+        req.body.qteEmprunt,
         req.body.dateEmprunt,
         req.body.dateRetour
     ]
@@ -120,50 +150,15 @@ app.delete('/deleteEmprunt/:idEmprunt', (req, res) => {
     })
 })
 app.put('updateEmprunt/:idEmprunt', (req, res) => {
-    const sql = "UPDATE emprunt SET `idEmprunteur`=?,`idEmprunteur`=?,`nombreEmprunt`=?,`dateEmprunt`=?,`dateRetour`=? WHERE `idEmprunteur`=?";
-    const id = req.body.idEmprunteur;
-    db.query(sq, [req.body.idEmprunteur, req.body.idEmprunteur, req.body.nombreEmprunt, req.body.dateEmprunt, req.body.dateRetour, id], (err, result) => {
+    const sql = "UPDATE emprunt SET `idEmprunteur`=?,`idEmprunteur`=?,`qteEmprunt`=?,`dateEmprunt`=?,`dateRetour`=? WHERE `idEmprunteur`=?";
+    const id = req.params.idEmprunteur;
+    db.query(sq, [req.body.idEmprunteur, req.body.idEmprunteur, req.body.qteEmprunt, req.body.dateEmprunt, req.body.dateRetour, id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
 
 })
-//exemplaire
-app.get("/exemplaire", (req, res) => {
-    const sql = "SELECT * FROM exemplaire";
-    db.query(sql, (err, result) => {
-        if (err) return res.json({ Message: "Erreur dans serveur" });
-        return res.json(result);
-    });
-});
-app.post("/inserstExemplaire", (err, result) => {
-    const sql = "INSERT INTO exemplaire(`idLivre`, `nombreExemplaire`) VALUES(?)";
-    const values = [
-        req.body.idLivre,
-        req.body.nombreExemplaire
-    ]
-    db.query(sql, [values], (err, result) => {
-        if (err) return res.json(err);
-        return res.json(result);
-    });
-});
-app.put('updateEmemplaire/:idExemplaire', (req, res) => {
-    const sql = "UPDATE exemplaire SET `idLivre`=?,`nombreExemplaire`=? WHERE `idExemplaire`=?";
-    const id = req.body.idExemplaire;
-    db.query(sq, [req.body.idLivre, req.body.nomExemplaire, id], (err, result) => {
-        if (err) return res.json({ Message: "Erreur dans serveur" });
-        return res.json(result);
-    });
-});
-app.delete('/deleteExemplaire/:idExemplaire', (req, res) => {
-    const sql = "DELETE FROM exemplaire WHERE idExemplaire = ?";
-    const id = req.params.idExemplaire
 
-    db.query(sql, [id], (err, result) => {
-        if (err) return res.json({ Message: "Erreur dans serveur" });
-        return res.json(result);
-    })
-})
 app.get('/users', (req, res) => {
     const sql = "SELECT * FROM users";
     db.query(sql, (err, result) => {
@@ -185,7 +180,7 @@ app.post('/users', (req, res) => {
     })
 })
 
-app.get('users/detail/:id', (req, res) => {
+app.get('/users/detail/:id', (req, res) => {
     const sql = "SELECT * FROM users WHERE ID = ?";
     const id = req.params.id
 
@@ -195,7 +190,7 @@ app.get('users/detail/:id', (req, res) => {
     })
 })
 
-app.put('users/update/:id', (req, res) => {
+app.put('/updateUser/:id', (req, res) => {
     const sql = "UPDATE users SET `Nom`=?, `Email`=?, `Password`=? WHERE ID=?";
     const id = req.params.id
 
