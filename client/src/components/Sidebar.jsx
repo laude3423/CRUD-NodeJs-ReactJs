@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../index.css';
-import { FaTh, FaBars, FaShoppingBag, FaMoon, FaRegChartBar, FaUserAlt, FaUserLock } from "react-icons/fa";
+import { FaBars, FaMoon, FaPersonBooth, FaUserLock, FaUserFriends, FaBook, FaHome } from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 import useLocalStorage from 'use-local-storage';
 
@@ -19,28 +19,28 @@ const Sidebar = ({ children }) => {
     const menuItem = [
         {
             path: '/',
-            name: "Loging",
+            name: "Login",
             icon: <FaUserLock />
         },
         {
-            path: '/acceuil',
-            name: "Acceuil",
-            icon: <FaTh />
+            path: '/home',
+            name: "Home",
+            icon: <FaHome />
         },
         {
             path: '/emprunt',
             name: "Emprunt",
-            icon: <FaUserAlt />
+            icon: <FaPersonBooth />
         },
         {
             path: '/emprunteur',
             name: "Emprunteur",
-            icon: <FaRegChartBar />
+            icon: <FaUserFriends />
         },
         {
             path: '/livre',
             name: "Livre",
-            icon: <FaShoppingBag />
+            icon: <FaBook />
         },
 
     ]

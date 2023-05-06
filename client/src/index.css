@@ -254,6 +254,10 @@ icon, .link_text{
   background: var(--sidebar-color);
   transition:  var(--tran-03);
 }
+form{
+  width: 300px;
+
+}
 .sidebar .mode{
   position: relative;
   color:var(--link-color) ;
