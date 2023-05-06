@@ -1,6 +1,10 @@
-import express, { json } from 'express';
+import express, { json, response } from 'express';
 import mysql from 'mysql';
 import cors from 'cors';
+import bcrypt from 'bcrypt';
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
+const salt = 10;
 
 const app = express();
 app.use(cors());
@@ -167,17 +171,41 @@ app.get('/users', (req, res) => {
     })
 })
 
-app.post('/users', (req, res) => {
-    const sql = "INSERT INTO users(`Nom`, `Email`, `Password`) VALUES(?)";
-    const values = [
-        req.body.nom,
-        req.body.email,
-        req.body.password
-    ]
-    db.query(sql, [values], (err, result) => {
-        if (err) return res.json(err);
-        return res.json(result);
+app.post('/login', (req, res) => {
+    const sql = "SELECT * FROM users WHERE Email=?";
+    db.query(sql, [req.body.Email], (err, data) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        if (data.length > 0) {
+            bcrypt.compare(req.body.Password.toString(), data[0].Password, (err, response) => {
+                if (err) return res.json({ Message: "Erreur dans serveur" });
+                if (response) {
+                    return res.json({ Status: "Success" });
+                } else {
+                    return res.json({ Error: "Mot de passe incorrect" });
+                }
+            })
+        } else {
+            return res.json({ Error: "Votre email n'existe pas" });
+        }
     })
+})
+
+app.post("/register", (req, res) => {
+    const sql = "INSERT INTO users(`Nom`, `Email`, `Password`) VALUES(?)";
+
+    bcrypt.hash(req.body.Password.toString(), salt, (err, hash) => {
+        if (err) return res.json({ Error: "Error for hassing password" });
+        const values = [
+            req.body.Nom,
+            req.body.Email,
+            hash
+        ]
+        db.query(sql, [values], (err, result) => {
+            if (err) return res.json(err);
+            return res.json(result);
+        })
+    })
+
 })
 
 app.get('/users/detail/:id', (req, res) => {
