@@ -48,10 +48,10 @@ app.post("/insertLivre", (req, res) => {
     })
 })
 app.put('/updateLivre/:id', (req, res) => {
-    const sql = "UPDATE livre SET `titreLivre=?`, `auteurLivre`=?,`editeurLivre`=?,`nombre`=?,`dateParution`=? WHERE idLivre=?";
+    const sql = "UPDATE livre SET `titreLivre`=?, `auteurLivre`=?,`editeurLivre`=?,`nombre`=?,`dateParution`=? WHERE idLivre=?";
     const id = req.params.id;
     db.query(sql, [req.body.titreLivre, req.body.auteurLivre, req.body.editeurLivre, req.body.nombre, req.body.dateParution, id], (err, result) => {
-        if (err) return res.json({ Message: "Erreur dans serveur" });
+        if (err) return console.log(err);
         return res.json(result);
     })
 })
@@ -170,7 +170,13 @@ app.get('/users', (req, res) => {
         return res.json(result);
     })
 })
-
+app.get('/admin', (req, res) => {
+    const sql = "SELECT * FROM admin";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
 app.post('/login', (req, res) => {
     const sql = "SELECT * FROM users WHERE Email=?";
     db.query(sql, [req.body.Email], (err, data) => {
@@ -234,6 +240,52 @@ app.delete('users/delete/:id', (req, res) => {
     db.query(sql, [id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
+    })
+})
+app.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    return res.json({ Status: "Success" });
+})
+
+//audit
+app.get('/livre_audit', (req, res) => {
+    const sql = "SELECT * FROM livre_audit";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.get('/emprunt_audit', (req, res) => {
+    const sql = "SELECT * FROM emprunt_audit";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.get('/emprunteur_audit', (req, res) => {
+    const sql = "SELECT * FROM emprunteur_audit";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+//audit
+app.post('/adminLogin', (req, res) => {
+    const sql = "SELECT * FROM admin WHERE Email=?";
+    db.query(sql, [req.body.Email], (err, data) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        if (data.length > 0) {
+            bcrypt.compare(req.body.Password.toString(), data[0].Password, (err, response) => {
+                if (err) return res.json({ Message: "Erreur dans serveur" });
+                if (response) {
+                    return res.json({ Status: "Success" });
+                } else {
+                    return res.json({ Error: "Mot de passe incorrect" });
+                }
+            })
+        } else {
+            return res.json({ Error: "Votre email n'existe pas" });
+        }
     })
 })
 
