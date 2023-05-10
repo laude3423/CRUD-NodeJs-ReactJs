@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 
-function Home() {
+function AdminHome() {
     const [adminCount, setAdminCount] = useState([])
     const [employeeCount, setEmployeeCount] = useState([])
     const [livreCount, setLivreCount] = useState([])
@@ -50,24 +50,28 @@ function Home() {
                     <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
                         <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
                             <a href="/" className="d-flex align-items-center pb-3 mb-md-1 mt-md-3 me-md-auto text-white text-decoration-none">
-                                <span className="fs-5 fw-bolder d-none d-sm-inline">User Acceuil</span>
+                                <span className="fs-5 fw-bolder d-none d-sm-inline">Admin Acceuil</span>
                             </a>
                             <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                                 <li>
-                                    <Link to="/" className="link active">
-                                        <i className="fs-4 bi-speedometer2"></i> <span className="ms-1 d-none d-sm-inline">Acceuil</span> </Link>
+                                    <Link to="/adminHome" className="link active">
+                                        <i className="fs-4 bi-house"></i> <span className="ms-1 d-none d-sm-inline">Acceuil</span> </Link>
                                 </li>
                                 <li>
-                                    <Link to="/emprunt" className="link text-white">
+                                    <Link to="/empruntAudit" className="link text-white">
                                         <i className="fs-4 bi-people"></i> <span className="ms-1 d-none d-sm-inline">Emprunt</span> </Link>
                                 </li>
                                 <li>
-                                    <Link to="/emprunteur" className="link text-white">
+                                    <Link to="/emprunteurAudit" className="link text-white">
                                         <i className="fs-4 bi-person"></i> <span className="ms-1 d-none d-sm-inline">Emprunteur</span></Link>
                                 </li>
                                 <li>
-                                    <Link to="/livre" className="link text-white">
-                                        <i className="fs-4 bi-person"></i> <span className="ms-1 d-none d-sm-inline">Livre</span></Link>
+                                    <Link to="/livreAudit" className="link text-white">
+                                        <i className="fs-4 bi-book"></i> <span className="ms-1 d-none d-sm-inline">Livre</span></Link>
+                                </li>
+                                <li>
+                                    <Link to="/register" className="link text-white">
+                                        <i className="fs-4 bi-people"></i> <span className="ms-1 d-none d-sm-inline">Gérer user</span></Link>
                                 </li>
                                 <li onClick={handleLogout}>
                                     <a href="#" className="link text-white">
@@ -165,4 +169,4 @@ function Home() {
     )
 }
 
-export default Home
+export default AdminHome

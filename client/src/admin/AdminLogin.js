@@ -1,7 +1,7 @@
 import { Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const toast = useToast();
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Login = () => {
     })
     const handelSubmit = (event) => {
         event.preventDefault();
-        axios.post('http://localhost:8081/login', values)
+        axios.post('http://localhost:8081/adminLogin', values)
             .then(res => {
                 if (res.data.Status === "Success") {
                     toast({
@@ -21,7 +21,7 @@ const Login = () => {
                         duration: 4000,
                         isClosable: true,
                     });
-                    navigate('/home');
+                    navigate('/adminHome');
                 } else {
                     toast({
                         position: "top",
