@@ -151,7 +151,7 @@ const Livre = () => {
                         </a>
                         <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                             <li>
-                                <Link to="/" className="link text-white">
+                                <Link to="/home" className="link text-white">
                                     <i className="fs-4 bi-speedometer2"></i> <span className="ms-1 d-none d-sm-inline">Acceuil</span> </Link>
                             </li>
                             <li>

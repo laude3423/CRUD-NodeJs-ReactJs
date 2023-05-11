@@ -23,7 +23,6 @@ const Emprunt = () => {
     const [emprunteurAPI, setEmprunteur] = useState([]);
     const [livreAPI, setLivre] = useState([]);
     const [empruntAPI, setEmprunt] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(null);
 
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -157,7 +156,7 @@ const Emprunt = () => {
                             </a>
                             <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                                 <li>
-                                    <Link to="/" className="link text-white">
+                                    <Link to="/home" className="link text-white">
                                         <i className="fs-4 bi-house"></i><span className="ms-1 d-none d-sm-inline">Acceuil</span> </Link>
                                 </li>
                                 <li>
@@ -302,20 +301,12 @@ const Emprunt = () => {
                                                         <Input type='number' placeholder="Veuillez entrer le nombre emprunté!" name='qteEmprunt' onChange={e => setValues({ ...values, qteEmprunt: e.target.value })} value={values.qteEmprunt} />
                                                     </FormControl>
                                                     <FormControl>
-                                                        <label>Date d'emprunt</label>
-                                                        <div className='form-control'>
-                                                            <Datepicker selected={selectedDate} onChange={date => setSelectedDate(date)} className='dateEmprunt' name='dateEmprunt' value={dateFormat(values.dateEmprunt, 'dd/mm/yyyy')} placeholder='jj/mm/aaaa'
-                                                                dateFormat="dd/MM/yyyy"
-                                                            />
-                                                        </div>
+                                                        <FormLabel>Date d'emprunt</FormLabel>
+                                                        <Input type='date' name='dateEmprunt' onChange={e => setValues({ ...values, dateEmprunt: e.target.value })} value={values.dateEmprunt} />
                                                     </FormControl>
                                                     <FormControl>
-                                                        <label>Date de retour</label>
-                                                        <div className='form-control'>
-                                                            <Datepicker selected={selectedDate} onChange={date => setSelectedDate(date)} className='dateEmprunt' name='dateRetour' value={dateFormat(values.dateRetour, 'dd/mm/yyyy')} placeholder='jj/mm/aaaa'
-                                                                dateFormat="dd/MM/yyyy"
-                                                            />
-                                                        </div>
+                                                        <FormLabel>Date de retour</FormLabel>
+                                                        <Input type='date' name='dateRetour' onChange={e => setValues({ ...values, dateRetour: e.target.value })} value={values.dateRetour} />
                                                     </FormControl>
                                                 </ModalBody>
 
