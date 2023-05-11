@@ -104,9 +104,9 @@ app.put('/updateEmprunteur/:id', (req, res) => {
     })
 
 })
-app.delete('/deleteEmprunteur/:idEmprunteur', (req, res) => {
+app.delete('/deleteEmprunteur/:id', (req, res) => {
     const sql = "DELETE FROM emprunteur WHERE idEmprunteur = ?";
-    const id = req.params.idEmprunteur;
+    const id = req.params.id;
 
     db.query(sql, [id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
@@ -115,7 +115,7 @@ app.delete('/deleteEmprunteur/:idEmprunteur', (req, res) => {
 })
 //emprunt
 app.get("/emprunt", (req, res) => {
-    const sql = "SELECT livre.titreLivre AS titre, emprunteur.nomEmprunteur AS nom, emprunt.qteEmprunt AS qte, emprunt.dateEmprunt AS date, emprunt.dateRetour AS retour FROM emprunt, emprunteur, livre WHERE emprunt.idLivre=livre.idLivre AND emprunt.idEmprunteur=emprunteur.idEmprunteur";
+    const sql = "SELECT livre.titreLivre AS titre, emprunteur.nomEmprunteur AS nom, emprunt.idEmprunt AS idEmprunt, emprunt.qteEmprunt AS qte, emprunt.dateEmprunt AS date, emprunt.dateRetour AS retour FROM emprunt, emprunteur, livre WHERE emprunt.idLivre=livre.idLivre AND emprunt.idEmprunteur=emprunteur.idEmprunteur";
     db.query(sql, (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
@@ -144,25 +144,96 @@ app.post("/insertEmprunt", (req, res) => {
         return res.json(result);
     })
 });
-app.delete('/deleteEmprunt/:idEmprunt', (req, res) => {
+app.get("/detailEmprunt/:id", (req, res) => {
+    const sql = "SELECT * from emprunt WHERE idEmprunt=?";
+    const id = req.params.id;
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.delete('/deleteEmprunt/:id', (req, res) => {
     const sql = "DELETE FROM emprunt WHERE idEmprunt = ?";
-    const id = req.params.idEmprunt
+    const id = req.params.id
 
     db.query(sql, [id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
 })
-app.put('updateEmprunt/:idEmprunt', (req, res) => {
-    const sql = "UPDATE emprunt SET `idEmprunteur`=?,`idEmprunteur`=?,`qteEmprunt`=?,`dateEmprunt`=?,`dateRetour`=? WHERE `idEmprunteur`=?";
-    const id = req.params.idEmprunteur;
-    db.query(sq, [req.body.idEmprunteur, req.body.idEmprunteur, req.body.qteEmprunt, req.body.dateEmprunt, req.body.dateRetour, id], (err, result) => {
+app.put('/updateEmprunt/:id', (req, res) => {
+    const sql = "UPDATE emprunt SET `idEmprunteur`=?,`idLivre`=?,`qteEmprunt`=?,`dateEmprunt`=?,`dateRetour`=? WHERE `idEmprunt`=?";
+    const id = req.params.id;
+    db.query(sq, [req.body.idEmprunteur, req.body.idLivre, req.body.qteEmprunt, req.body.dateEmprunt, req.body.dateRetour, id], (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
     })
 
 })
+//remise
+app.get("/remisehome", (req, res) => {
+    const sql = "SELECT * FROM remise";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.get("/remise", (req, res) => {
+    const sql = "SELECT emprunt.idEmprunt AS idEmprunt, emprunt.qteEmprunt AS qte, emprunt.dateEmprunt AS date, emprunt.dateRetour AS retour, remise.idRemise, remise.dateRemise, remise.qteRemise FROM emprunt, remise WHERE emprunt.idEmprunt=remise.idEmprunt";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.get("/searchDate", (req, res) => {
+    const sql = "SELECT * FROM remise WHERE dateRemise BETWEEN ? AND ?";
+    const id = req.body.date1;
+    const id2 = req.body.date1;
+    db.query(sql, [id, id2], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+});
+app.post("/insertRemise", (req, res) => {
+    const sql = "INSERT INTO remise(`idEmprunt`,`dateRemise`,`qteRemise`) VALUES(?)";
+    const values = [
+        req.body.idEmprunt,
+        req.body.dateRemise,
+        req.body.qteRemise
+    ]
+    db.query(sql, [values], (err, result) => {
+        if (err) return res.json(err);
+        return res.json(result);
+    })
+});
+app.get("/detailRemise/:id", (req, res) => {
+    const sql = "SELECT * from remise WHERE idRemise=?";
+    const id = req.params.id;
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.put('/updateRemise/:id', (req, res) => {
+    const sql = "UPDATE remise SET `idEmprunt`=?,`dateRemise`=?,`qteRemise`=?";
+    const id = req.params.id;
+    db.query(sql, [req.body.idEmprunt, req.body.dateRemise, req.body.qteRemise, id], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
 
+})
+app.delete('/deleteRemise/:id', (req, res) => {
+    const sql = "DELETE FROM remise WHERE idRemise = ?";
+    const id = req.params.id
+
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+
+//user
 app.get('/users', (req, res) => {
     const sql = "SELECT * FROM users";
     db.query(sql, (err, result) => {
@@ -255,6 +326,13 @@ app.get('/logout', (req, res) => {
 //audit
 app.get('/livre_audit', (req, res) => {
     const sql = "SELECT * FROM livre_audit";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({ Message: "Erreur dans serveur" });
+        return res.json(result);
+    })
+})
+app.get('/remise_audit', (req, res) => {
+    const sql = "SELECT * FROM remise_audit";
     db.query(sql, (err, result) => {
         if (err) return res.json({ Message: "Erreur dans serveur" });
         return res.json(result);
