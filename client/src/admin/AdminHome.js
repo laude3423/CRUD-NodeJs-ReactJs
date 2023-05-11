@@ -8,6 +8,7 @@ function AdminHome() {
     const [livreCount, setLivreCount] = useState([])
     const [empruntCount, setEmpruntCount] = useState([])
     const [emprunteurCount, setEmprunteurCount] = useState([])
+    const [remiseCount, setRemiseCount] = useState([]);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -41,6 +42,10 @@ function AdminHome() {
             .then(res => {
                 setEmprunteurCount(res.data)
             }).catch(err => console.log(err));
+        axios.get('http://localhost:8081/remise')
+            .then(res => {
+                setRemiseCount(res.data)
+            }).catch(err => console.log(err));
 
     }, [])
     return (
@@ -73,6 +78,10 @@ function AdminHome() {
                                     <Link to="/register" className="link text-white">
                                         <i className="fs-4 bi-people"></i> <span className="ms-1 d-none d-sm-inline">Gérer user</span></Link>
                                 </li>
+                                <li>
+                                    <Link to="/remiseAudit" className="link text-white">
+                                        <i className="fs-4 bi-back"></i> <span className="ms-1 d-none d-sm-inline">Remise</span></Link>
+                                </li>
                                 <li onClick={handleLogout}>
                                     <a href="#" className="link text-white">
                                         <i className="fs-4 bi-power"></i> <span className="ms-1 d-none d-sm-inline">Logout</span></a>
@@ -81,7 +90,7 @@ function AdminHome() {
                         </div>
                     </div>
                     <div class="col p-0 m-0">
-                        <div className='p-2 d-flex justify-content-center shadow'>
+                        <div className='p-2 d-flex justify-content-center shadow text-color'>
                             <h4 style={{ fontWeight: "bold" }}>Système de gestion de bibliothèque</h4>
                         </div>
                         <Outlet />
@@ -149,7 +158,7 @@ function AdminHome() {
                                 </div>
                                 <hr />
                                 <div className=''>
-                                    <h5>Total: {livreCount.length}</h5>
+                                    <h5>Total: {remiseCount.length}</h5>
                                 </div>
                             </div>
                             <div className='px-3 pt-2 pb-3 border shadow-sm w-25'>
@@ -158,7 +167,7 @@ function AdminHome() {
                                 </div>
                                 <hr />
                                 <div className=''>
-                                    <h5>Total: {livreCount.length}</h5>
+                                    <h5>Total: {0}</h5>
                                 </div>
                             </div>
                         </div>

@@ -51,6 +51,10 @@ const EmprunteurAudit = () => {
                                     <Link to="/register" className="link text-white">
                                         <i className="fs-4 bi-book"></i> <span className="ms-1 d-none d-sm-inline">Gérer user</span></Link>
                                 </li>
+                                <li>
+                                    <Link to="/remiseAudit" className="link text-white">
+                                        <i className="fs-4 bi-back"></i> <span className="ms-1 d-none d-sm-inline">Remise</span></Link>
+                                </li>
                                 <li onClick={handleLogout}>
                                     <a href="#" className="link text-white">
                                         <i className="fs-4 bi-power"></i> <span className="ms-1 d-none d-sm-inline">Logout</span></a>

@@ -44,11 +44,15 @@ const LivreAudit = () => {
                                         <i className="fs-4 bi-person"></i> <span className="ms-1 d-none d-sm-inline">Emprunteur</span></Link>
                                 </li>
                                 <li>
-                                    <Link to="/livreAudit" className="link text-white">
+                                    <Link to="/livreAudit" className="link active">
                                         <i className="fs-4 bi-book"></i> <span className="ms-1 d-none d-sm-inline">Livre</span></Link>
                                 </li>
                                 <li>
-                                    <Link to="/register" className="link active">
+                                    <Link to="/remiseAudit" className="link text-white">
+                                        <i className="fs-4 bi-back"></i> <span className="ms-1 d-none d-sm-inline">Remise</span></Link>
+                                </li>
+                                <li>
+                                    <Link to="/register" className="link text-white">
                                         <i className="fs-4 bi-people"></i> <span className="ms-1 d-none d-sm-inline">Gérer user</span></Link>
                                 </li>
                                 <li onClick={handleLogout}>

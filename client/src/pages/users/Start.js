@@ -14,7 +14,7 @@ const Start = () => {
                 <h2>Login</h2>
                 <div className='d-flex justify-content-between mt-5'>
                     <Button leftIcon={<AiOutlineUser />} colorScheme='teal' variant='outline' onClick={e => navigate('/adminLogin')} maxW="300px" minW="150px">Admin</Button>
-                    <Button leftIcon={<AiOutlineUsergroupAdd />} colorScheme='blue' variant='outline' onClick={e => navigate('/login')} maxW="300px" minW="150px">user</Button>
+                    <Button leftIcon={<AiOutlineUsergroupAdd />} colorScheme='blue' variant='outline' onClick={e => navigate('/login')} maxW="300px" minW="150px">User</Button>
                 </div>
             </div>
         </div>

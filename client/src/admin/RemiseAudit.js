@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react'
 
-const EmpruntAudit = () => {
+const RemiseAudit = () => {
     const [data, setData] = useState([])
     const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const EmpruntAudit = () => {
         }
     }
     useEffect(() => {
-        axios.get('http://localhost:8081/emprunt_audit/')
+        axios.get('http://localhost:8081/remise_audit/')
             .then(res => setData(res.data))
             .catch(err => console.log(err));
     }, [])
@@ -36,7 +36,7 @@ const EmpruntAudit = () => {
                                         <i className="fs-4 bi-house"></i><span className="ms-1 d-none d-sm-inline">Acceuil</span> </Link>
                                 </li>
                                 <li>
-                                    <Link to="/empruntAudit" className="link active">
+                                    <Link to="/empruntAudit" className="link text-white">
                                         <i className="fs-4 bi-people"></i> <span className="ms-1 d-none d-sm-inline">Emprunt</span> </Link>
                                 </li>
                                 <li>
@@ -48,7 +48,7 @@ const EmpruntAudit = () => {
                                         <i className="fs-4 bi-book"></i> <span className="ms-1 d-none d-sm-inline">Livre</span></Link>
                                 </li>
                                 <li>
-                                    <Link to="/remiseAudit" className="link text-white">
+                                    <Link to="/remiseAudit" className="link active">
                                         <i className="fs-4 bi-back"></i> <span className="ms-1 d-none d-sm-inline">Remise</span></Link>
                                 </li>
                                 <li>
@@ -64,20 +64,19 @@ const EmpruntAudit = () => {
                     </div>
                     <div class="col p-0 m-0">
                         <div className='p-2 d-flex justify-content-center shadow'>
-                            <h4>Liste des audits en emprunt</h4>
+                            <h4>Liste des audits en remise</h4>
                         </div>
                         <div className='justify-content-end'>
                         </div>
                         <table className='table'>
                             <thead>
                                 <tr>
-                                    <th>Numéro d'emprunteur</th>
-                                    <th>Ancien numéro du livre</th>
-                                    <th>Nouvel numéro du livre</th>
-                                    <th>Date d'emprunt</th>
-                                    <th>Date de retour</th>
-                                    <th>Ancien qté</th>
-                                    <th>Nouvelle qté</th>
+                                    <th>Ancien uméro d'emprunt</th>
+                                    <th>Nouvel numéro d'emprunt</th>
+                                    <th>Ancient date de remise</th>
+                                    <th>Nouvelle date de retour</th>
+                                    <th>Ancien qté remis</th>
+                                    <th>Nouvelle qté remis</th>
                                     <th>Action</th>
                                     <th>Date</th>
                                     <th>Nom d'utilisateur</th>
@@ -85,18 +84,17 @@ const EmpruntAudit = () => {
                             </thead>
                             <tbody>
                                 {
-                                    data.map((emprunt_audit, index) => {
+                                    data.map((remise_audit, index) => {
                                         return <tr key={index}>
-                                            <td>{emprunt_audit.idEmprunteur}</td>
-                                            <td>{emprunt_audit.ancienidLivre}</td>
-                                            <td>{emprunt_audit.nouvelleidLivre}</td>
-                                            <td>{emprunt_audit.dateEmprunt}</td>
-                                            <td>{emprunt_audit.dateRetour}</td>
-                                            <td>{emprunt_audit.ancienQte}</td>
-                                            <td>{emprunt_audit.nouvelleQte}</td>
-                                            <td>{emprunt_audit.action}</td>
-                                            <td>{emprunt_audit.Datee}</td>
-                                            <td>{emprunt_audit.utilisateur}</td>
+                                            <td>{remise_audit.AncienIdEmprunt}</td>
+                                            <td>{remise_audit.NouvelIdEmprunt}</td>
+                                            <td>{remise_audit.AncienDateRemise}</td>
+                                            <td>{remise_audit.NouvelleDateRemise}</td>
+                                            <td>{remise_audit.AncienQteRemise}</td>
+                                            <td>{remise_audit.NouvelleQteRemise}</td>
+                                            <td>{remise_audit.action}</td>
+                                            <td>{remise_audit.Datee}</td>
+                                            <td>{remise_audit.utilisateur}</td>
                                         </tr>
                                     })
                                 }
@@ -109,4 +107,4 @@ const EmpruntAudit = () => {
     )
 }
 
-export default EmpruntAudit
+export default RemiseAudit

@@ -15,6 +15,8 @@ import AdminLogin from './admin/AdminLogin';
 import EmpruntAudit from './admin/EmpruntAudit';
 import EmprunteurAudit from './admin/EmprunteurAudit';
 import LivreAudit from './admin/LivreAudit';
+import Remise from './pages/Remise/Remise';
+import RemiseAudit from './admin/RemiseAudit';
 
 
 function App() {
@@ -28,11 +30,13 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/livre" element={<Livre />} />
+        <Route path="/remise" element={<Remise />} />
         <Route path="/emprunt" element={<Emprunt />} />
         <Route path="/emprunteur" element={<Emprunteur />} />
         <Route path="/emprunteurAudit" element={<EmprunteurAudit />} />
         <Route path="/empruntAudit" element={<EmpruntAudit />} />
         <Route path="/livreAudit" element={<LivreAudit />} />
+        <Route path="/remiseAudit" element={<RemiseAudit />} />
       </Routes>
     </BrowserRouter>
   );

@@ -155,6 +155,10 @@ const Emprunteur = () => {
                                 <Link to="/livre" className="link text-white">
                                     <i className="fs-4 bi-person"></i> <span className="ms-1 d-none d-sm-inline">Livre</span></Link>
                             </li>
+                            <li>
+                                <Link to="/remise" className="link text-white">
+                                    <i className="fs-4 bi-back"></i> <span className="ms-1 d-none d-sm-inline">Remise</span></Link>
+                            </li>
                             <li onClick={handleLogout}>
                                 <a href="#" className="link text-white">
                                     <i className="fs-4 bi-power"></i> <span className="ms-1 d-none d-sm-inline">Logout</span></a>

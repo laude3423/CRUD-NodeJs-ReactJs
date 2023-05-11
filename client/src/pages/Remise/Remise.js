@@ -19,10 +19,9 @@ import {
 } from '@chakra-ui/react';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Emprunt = () => {
-    const [emprunteurAPI, setEmprunteur] = useState([]);
-    const [livreAPI, setLivre] = useState([]);
-    const [empruntAPI, setEmprunt] = useState([]);
+const Remise = () => {
+    const [dataRemise, setRemise] = useState([]);
+    const [dataEmprunt, setEmprunt] = useState([]);
 
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,13 +30,10 @@ const Emprunt = () => {
     const [search, setSearch] = useState("")
     const navigate = useNavigate();
     const [values, setValues] = useState({
-        idEmp: '',
-        idEmprunteur: '',
-        idLivre: '',
-        qteEmprunt: '',
-        dateEmprunt: '',
-        dateRetour: '',
-        titreLivre: '',
+        idRemise: '',
+        idEmprunt: '',
+        dateRemise: '',
+        qteRemise: '',
     });
     const handleLogout = () => {
         if (window.confirm('Souhaitez-vous vraiment vous déconnecter?')) {
@@ -52,8 +48,8 @@ const Emprunt = () => {
     const recordsPerPage = 4;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
-    const records = empruntAPI.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(empruntAPI.length / recordsPerPage);
+    const records = dataRemise.slice(firstIndex, lastIndex);
+    const npage = Math.ceil(dataRemise.length / recordsPerPage);
     const numbers = [...Array(npage + 1).keys()].slice(1);
 
     const changePage = (id) => {
@@ -79,7 +75,7 @@ const Emprunt = () => {
             .catch(err => console.log(err));
     }
     const onUpdate = (id) => {
-        axios.put('http://localhost:8081/updateEmprunt/' + id, values)
+        axios.put('http://localhost:8081/updateRemise/' + id, values)
             .then(res => {
                 console.log(res);
                 toast({
@@ -97,7 +93,7 @@ const Emprunt = () => {
     }
     const onAdd = () => {
         console.log(values);
-        axios.post('http://localhost:8081/insertEmprunt', values)
+        axios.post('http://localhost:8081/insertRemise', values)
             .then(res => {
                 console.log(res);
                 toast({
@@ -117,40 +113,35 @@ const Emprunt = () => {
         setValues("");
     }
     const getList = () => {
-        let endpoints = ['http://localhost:8081/emprunt/', 'http://localhost:8081/emprunteur/', 'http://localhost:8081/livre/'];
+        let endpoints = ['http://localhost:8081/emprunt/', 'http://localhost:8081/remise/'];
 
         axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(
-            axios.spread(({ data: emprunt }, { data: emprunteur }, { data: livre }) => {
+            axios.spread(({ data: emprunt }, { data: remise }) => {
 
-                setEmprunteur(emprunteur);
+                setRemise(remise);
                 setEmprunt(emprunt);
-                setLivre(livre);
             })
         );
 
     }
     const handlEdit = (id) => {
         console.log(id)
-        axios.get('http://localhost:8081/detailEmprunt/' + id)
+        axios.get('http://localhost:8081/detailRemise/' + id)
             .then(res => {
                 console.log(res.data);
-                setValues({ ...values, idEmp: res.data[0].idEmprunt, idLivre: res.data[0].idLivre, idEmprunteur: res.data[0].idEmprunteur, qteEmprunt: res.data[0].qteEmprunt, dateEmprunt: res.data[0].dateEmprunt, dateRetour: res.data[0].dateRetour })
+                setValues({ ...values, idRemise: res.data[0].idRemise, idEmprunt: res.data[0].idEmprunt, dateRemise: res.data[0].dateRemise, qteRemise: res.data[0].qteRemise })
             })
             .catch(err => console.log(err))
     }
-    // const handlEdit = (emprunt) => {
-    //     console.log(emprunt)
-    //     setValues({ ...values, idEmp: emprunt.idEmprunt, idEmprunteur: emprunt.nom, idLivre: emprunt.titre, qteEmprunt: emprunt.qte, dateEmprunt: emprunt.date, dateRetour: emprunt.retour });
-    // }
     useEffect(() => {
         getList();
     }, [])
 
     const handlDelete = (id) => {
         if (window.confirm('Vous êtes sûr de supprimer?')) {
-            axios.delete('http://localhost:8081/emprunt/delete/' + id)
+            axios.delete('http://localhost:8081/deleteRemise/' + id)
                 .then(res => {
-                    window.location.reload();
+                    getList();
                 })
                 .catch(err => console.log(err))
         }
@@ -170,7 +161,7 @@ const Emprunt = () => {
                                         <i className="fs-4 bi-house"></i><span className="ms-1 d-none d-sm-inline">Acceuil</span> </Link>
                                 </li>
                                 <li>
-                                    <Link to="/emprunt" className="link active">
+                                    <Link to="/emprunt" className="link text-white">
                                         <i className="fs-4 bi-people"></i> <span className="ms-1 d-none d-sm-inline">Emprunt</span> </Link>
                                 </li>
                                 <li>
@@ -182,7 +173,7 @@ const Emprunt = () => {
                                         <i className="fs-4 bi-book"></i> <span className="ms-1 d-none d-sm-inline">Livre</span></Link>
                                 </li>
                                 <li>
-                                    <Link to="/remise" className="link text-white">
+                                    <Link to="/remise" className="link active">
                                         <i className="fs-4 bi-back"></i> <span className="ms-1 d-none d-sm-inline">Remise</span></Link>
                                 </li>
                                 <li onClick={handleLogout}>
@@ -200,7 +191,7 @@ const Emprunt = () => {
                         <div className='App'>
                             <Container maxW={'full'} p="4" fontSize={'18px'}>
                                 <Box rounded="lg" boxShadow="base" p="4" maxW={'full'}>
-                                    <Text fontSize="xl" fontWeight="bold">Gestion d'emprunt</Text>
+                                    <Text fontSize="xl" fontWeight="bold">Gestion de remise du livre</Text>
                                     <Box rounded="lg" boxShadow="base" p="4">
                                         <Box mt="2" gap={'2'} mb="4" display={'flex'}>
                                             <FormControl>
@@ -219,7 +210,7 @@ const Emprunt = () => {
                                     <Box mt="5" rounded={'lg'} boxShadow="base">
                                         <Box p="4" display={'flex'} justifyContent="space-between">
                                             <Text fontSize="xl" fontWeight="bold">
-                                                Liste des emprunts
+                                                Liste des remises
                                             </Text>
                                             <Button leftIcon={<AiOutlinePlus fontSize={'20px'} />} onClick={onOpen} colorScheme="teal" variant="outline" maxW="300px"
                                                 minW="150px">Nouveau(+)
@@ -228,26 +219,28 @@ const Emprunt = () => {
                                         <table className='table'>
                                             <thead>
                                                 <tr>
-                                                    <th>Nom d'emprunteur</th>
-                                                    <th>Nom du livre</th>
-                                                    <th>Nombre</th>
+                                                    <th>Numéro d'emprunt</th>
+                                                    <th>Qte emprunt</th>
                                                     <th>Date d'emprunt</th>
                                                     <th>Date de retour</th>
+                                                    <th>Date de remise</th>
+                                                    <th>Qte remis</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
-                                                    records.map((emprunt, index) => {
+                                                    records.map((remise, index) => {
                                                         return <tr key={index}>
-                                                            <td>{emprunt.nom}</td>
-                                                            <td>{emprunt.titre}</td>
-                                                            <td>{emprunt.qte}</td>
-                                                            <td>{dateFormat(emprunt.date, 'dd/mm/yyyy')}</td>
-                                                            <td>{dateFormat(emprunt.retour, 'dd/mm/yyyy')}</td>
+                                                            <td>{remise.idEmprunt}</td>
+                                                            <td>{remise.qte}</td>
+                                                            <td>{dateFormat(remise.date, 'dd/mm/yyyy')}</td>
+                                                            <td>{dateFormat(remise.retour, 'dd/mm/yyyy')}</td>
+                                                            <td>{dateFormat(remise.dateRemise, 'dd/mm/yyyy')}</td>
+                                                            <td>{remise.qteRemise}</td>
                                                             <td>
-                                                                <button onClick={() => { handlEdit(emprunt.idEmprunt); onOpen(); }} className='btn btn btn-primary'><AiFillEdit /></button>
-                                                                <button onClick={() => handlDelete(emprunt.idEmprunt)} className='btn btn btn-danger'><AiFillDelete /></button>
+                                                                <button onClick={() => { handlEdit(remise.idRemise); onOpen(); }} className='btn btn btn-primary'><AiFillEdit /></button>
+                                                                <button onClick={() => handlDelete(remise.idRemise)} className='btn btn btn-danger'><AiFillDelete /></button>
                                                             </td>
                                                         </tr>
                                                     })
@@ -285,47 +278,31 @@ const Emprunt = () => {
                                                 <ModalCloseButton />
                                                 <ModalBody pb={6}>
                                                     <FormControl>
-                                                        <Input type='hidden' onChange={e => setValues({ ...values, idEmp: e.target.value })} value={values.idEmp} />
+                                                        <Input type='hidden' onChange={e => setValues({ ...values, idRemise: e.target.value })} value={values.idRemise} />
                                                     </FormControl>
                                                     <FormControl>
-                                                        <FormLabel>Nom d'emprunteur</FormLabel>
-                                                        <Select placeholder="Choisir nom d'emprunteur" name='idEmprunteur' onChange={e => setValues({ ...values, idEmprunteur: e.target.value })} value={values.idEmprunteur}>
+                                                        <FormLabel>Numéro d'emprunteur</FormLabel>
+                                                        <Select placeholder="Choisir numéro d'emprunt" name='idEmprunteur' onChange={e => setValues({ ...values, idEmprunt: e.target.value })} value={values.idEmprunt}>
                                                             {
-                                                                emprunteurAPI.map((emprunteur, index) => (
-                                                                    <option value={emprunteur.idEmprunteur}>{emprunteur.nomEmprunteur}</option>
+                                                                dataEmprunt.map((remis, index) => (
+                                                                    <option value={remis.idEmprunt}>{remis.idEmprunt}</option>
 
                                                                 ))
                                                             }
                                                         </Select>
                                                     </FormControl>
                                                     <FormControl>
-                                                        <FormLabel>Titre du livre</FormLabel>
-                                                        <Select placeholder='Choisir titre du livre' name='idLivre' onChange={e => setValues({ ...values, idLivre: e.target.value })} value={values.idLivre}>
-                                                            {
-                                                                livreAPI.map((livre, index) => (
-                                                                    <option value={livre.idLivre}>{livre.titreLivre}</option>
-
-                                                                ))
-                                                            }
-                                                        </Select>
-                                                    </FormControl>
-
-                                                    <FormControl>
-                                                        <FormLabel>Nombre emprunté</FormLabel>
-                                                        <Input type='number' placeholder="Veuillez entrer le nombre emprunté!" name='qteEmprunt' onChange={e => setValues({ ...values, qteEmprunt: e.target.value })} value={values.qteEmprunt} />
+                                                        <FormLabel>Date de remis</FormLabel>
+                                                        <Input type='date' name='dateRemise' onChange={e => setValues({ ...values, dateRemise: e.target.value })} value={values.dateRemise} />
                                                     </FormControl>
                                                     <FormControl>
-                                                        <FormLabel>Date d'emprunt</FormLabel>
-                                                        <Input type='date' name='dateEmprunt' onChange={e => setValues({ ...values, dateEmprunt: e.target.value })} value={values.dateEmprunt} />
-                                                    </FormControl>
-                                                    <FormControl>
-                                                        <FormLabel>Date de retour</FormLabel>
-                                                        <Input type='date' name='dateRetour' onChange={e => setValues({ ...values, dateRetour: e.target.value })} value={values.dateRetour} />
+                                                        <FormLabel>Nombre remis</FormLabel>
+                                                        <Input type='number' placeholder="Veuillez entrer le nombre remis!" name='qteRemise' onChange={e => setValues({ ...values, qteRemise: e.target.value })} value={values.qteRemise} />
                                                     </FormControl>
                                                 </ModalBody>
 
                                                 <ModalFooter>
-                                                    <Button colorScheme='blue' mr={3} onClick={() => (values.idEmp ? onUpdate(values.idEmp) : onAdd())}>
+                                                    <Button colorScheme='blue' mr={3} onClick={() => (values.idRemise ? onUpdate(values.idRemise) : onAdd())}>
                                                         Save
                                                     </Button>
                                                     <Button onClick={onClose}>Cancel</Button>
@@ -343,4 +320,4 @@ const Emprunt = () => {
     )
 }
 
-export default Emprunt
+export default Remise
