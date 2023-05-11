@@ -227,11 +227,16 @@ app.get('/users/detail/:id', (req, res) => {
 app.put('/updateUser/:id', (req, res) => {
     const sql = "UPDATE users SET `Nom`=?, `Email`=?, `Password`=? WHERE ID=?";
     const id = req.params.id
+    bcrypt.hash(req.body.Password.toString(), salt, (err, hash) => {
+        if (err) return res.json({ Error: "Error for hassing password" });
 
-    db.query(sql, [req.body.nom, req.body.email, req.body.password, id], (err, result) => {
-        if (err) return res.json({ Message: "Erreur dans serveur" });
-        return res.json(result);
+        db.query(sql, [req.body.Nom, req.body.Email, hash, id], (err, result) => {
+            if (err) return res.json({ Message: "Erreur dans serveur" });
+            return res.json(result);
+        })
     })
+
+
 })
 app.delete('users/delete/:id', (req, res) => {
     const sql = "DELETE FROM users WHERE ID = ?";
